@@ -3,6 +3,7 @@ import {A} from 'hookrouter';
 import {Table} from 'react-bootstrap';
 import {FontAwesomeIcon}  from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import ItensListarTarefas from './itens-lista-tarefas';
 
 function ListarTarefas(){
 
@@ -41,7 +42,9 @@ function ListarTarefas(){
                     </tr>
                 </thead>
                 <tbody>
-
+                  <ItensListarTarefas
+                    tarefas={tarefas}
+                    recarregarTarefas={setCarregarTarefas}/>  
                 </tbody>
             </Table>
         </div>
