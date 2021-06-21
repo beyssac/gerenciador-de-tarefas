@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {A} from 'hookrouter';
-import {Table} from 'react-bootstrap';
+import {Table, Form} from 'react-bootstrap';
 import {FontAwesomeIcon}  from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import ItensListarTarefas from './itens-lista-tarefas';
@@ -17,12 +17,17 @@ function ListarTarefas(){
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [ordenarAsc, setOrdenarAsc] = useState(false);
     const [ordenarDesc, setOrdenarDesc] = useState(false);
+    const [filtroTarefa, setFiltroTarefa] = useState('');
 
     useEffect(() => {
         function obterTarefas(){
             const tarefasDb = localStorage['tarefas'];
             let listaTarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-             //ordenar
+            //filtrar
+            listaTarefas = listaTarefas.filter(
+                t => t.nome.toLowerCase().indexOf(filtroTarefa.toLowerCase()) === 0
+            );
+            //ordenar
             if (ordenarAsc) {
                 listaTarefas.sort((t1, t2) => (t1.nome.toLowerCase() > t2.nome.toLowerCase()) ? 1 : -1);
             } else if (ordenarDesc) {
@@ -35,7 +40,7 @@ function ListarTarefas(){
             obterTarefas();
             setCarregarTarefas(false);
         }        
-    },[carregarTarefas, paginaAtual, ordenarAsc, ordenarDesc]);
+    },[carregarTarefas, paginaAtual, ordenarAsc, ordenarDesc, filtroTarefa]);
 
     function handleMudarPagina(pagina){
         setPaginaAtual(pagina);
@@ -56,6 +61,11 @@ function ListarTarefas(){
         }
         setCarregarTarefas(true);
       }
+
+    function handleFiltrar(event) {
+        setFiltroTarefa(event.target.value);
+        setCarregarTarefas(true);
+    }
 
     return(
         <div className="text-center">
@@ -81,6 +91,17 @@ function ListarTarefas(){
                                    Nova Tarefa
                             </A>
                         </th>
+                    </tr>
+                    <tr>
+                        <th>
+                        <Form.Control
+                            type="text"
+                            value={filtroTarefa}
+                            onChange={handleFiltrar}
+                            data-testid="txt-tarefa"
+                            className="filtro-tarefa" />
+                        </th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
